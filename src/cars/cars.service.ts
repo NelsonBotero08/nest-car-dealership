@@ -1,25 +1,26 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateCarDto } from './dto/create-carDto.dto';
 import { v4 as uuid } from 'uuid';
+import { CreateCarDto,UpdateCarDto } from './dto';
+import { Car } from './interfaces/car.interface';
 
 @Injectable()
 export class CarsService {
   private cars = [
-    {
-      id: uuid(),
-      brand: 'Toyota',
-      model: 'Corolla',
-    },
-    {
-      id: uuid(),
-      brand: 'Honda',
-      model: 'Civic',
-    },
-    {
-      id: uuid(),
-      brand: 'Jeep',
-      model: 'Cherokee',
-    },
+    // {
+    //   id: uuid(),
+    //   brand: 'Toyota',
+    //   model: 'Corolla',
+    // },
+    // {
+    //   id: uuid(),
+    //   brand: 'Honda',
+    //   model: 'Civic',
+    // },
+    // {
+    //   id: uuid(),
+    //   brand: 'Jeep',
+    //   model: 'Cherokee',
+    // },
   ];
 
   findAll() {
@@ -52,4 +53,39 @@ export class CarsService {
 
     return newcar;
   }
+
+  update( id: string, updateCarDto: UpdateCarDto ){
+
+    const { brand, model } = updateCarDto
+
+    let updateCar = this.findOneById( id )
+  
+    if (brand !== undefined) {
+      updateCar.brand = brand;
+    }
+  
+    if (model !== undefined) {
+      updateCar.model = model;
+    }
+  
+    return updateCar;
+  }
+
+  delete(id: string){
+
+    const car = this.findOneById(id)
+
+    this.cars = this.cars.filter(car => car.id !== id )
+
+    return {
+      message: `Car with id ${id} has been deleted`,  
+      deletedCar: car,
+    };
+  }
+
+  fillCarsWithSeedData ( cars: Car[] ){
+    this.cars = cars
+  }
+
+
 }
